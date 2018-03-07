@@ -1,5 +1,5 @@
-#ifndef MESSAGEFACTORY_H
-#define MESSAGEFACTORY_H
+#ifndef OMS_MESSAGE_FACTORY_H
+#define OMS_MESSAGE_FACTORY_H
 
 #include <string>
 #include <vector>
@@ -8,19 +8,27 @@
 
 #include "ByteMessage.h"
 #include "Namespace.h"
+#include "OMS.h"
 
 BEGIN_NAMESPACE_2(io, openmessaging)
-        class MessageFactory {
-        public:
-            virtual ~MessageFactory() {
-            }
+    /**
+     * A factory interface for creating {@code Message} objects.
+     *
+     */
+    class MessageFactory {
+    public:
+        virtual ~MessageFactory() {
+        }
 
-            virtual boost::shared_ptr<ByteMessage>
-            createByteMessageToTopic(std::string &topic, std::vector<char> &body) = 0;
+        virtual boost::shared_ptr<ByteMessage>
+        createByteMessageToTopic(const std::string &topic,
+                                 const scoped_array<char> &body) = 0;
 
-            virtual boost::shared_ptr<ByteMessage>
-            createByteMessageToQueue(std::string &topic, std::vector<char> &body) = 0;
-        };
+        virtual boost::shared_ptr<ByteMessage>
+        createByteMessageToQueue(const std::string &topic,
+                                 const scoped_array<char> &body) = 0;
+    };
 
 END_NAMESPACE_2(io, openmessaging)
-#endif // MESSAGEFACTORY_H
+
+#endif // OMS_MESSAGE_FACTORY_H

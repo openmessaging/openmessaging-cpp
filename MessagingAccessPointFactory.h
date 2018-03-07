@@ -1,5 +1,5 @@
-#ifndef MESSAGINGACCESSPOINTFACTORY_H
-#define MESSAGINGACCESSPOINTFACTORY_H
+#ifndef OMS_MESSAGING_ACCESS_POINT_FACTORY_H
+#define OMS_MESSAGING_ACCESS_POINT_FACTORY_H
 
 #include <string>
 
@@ -7,20 +7,44 @@
 
 #include "KeyValue.h"
 #include "MessagingAccessPoint.h"
+#include "interceptor/MessagingAccessPointInterceptor.h"
 #include "Namespace.h"
+#include "OMS.h"
 
 BEGIN_NAMESPACE_2(io, openmessaging)
 
-        extern boost::shared_ptr<KeyValue> kv_nullptr;
+    /**
+     * A factory that provides some static methods to create a {@code MessagingAccessPoint}
+     * from the specified OMS driver url.
+     * <p>
+     * The complete URL syntax is:
+     * <p>
+     * {@literal openmessaging:<driver_type>://<access_point>[,<access_point>,...]/<namespace>}
+     * <p>
+     * The first part of the URL specifies which OMS implementation is to be used, rocketmq is a
+     * optional driver type.
+     * <p>
+     * The brackets indicate that the extra access points are optional, but a correct OMS driver url
+     * needs at least one access point, which consists of hostname and port, like localhost:8081.
+     * <p>
+     * A namespace wraps the OMS resources in an abstraction that makes it appear to the users
+     * within the namespace that they have their own isolated instance of the global OMS resources.
+     *
+     * @version OMS 1.0
+     * @since OMS 1.0
+     */
+    class MessagingAccessPointFactory {
+    public:
+        static boost::shared_ptr<MessagingAccessPoint>
+        getMessagingAccessPoint(const std::string &url, const boost::shared_ptr<KeyValue> &properties = kv_nullptr);
 
-        class MessagingAccessPointFactory {
-        public:
+        static void
+        addInterceptor(const boost::shared_ptr<interceptor::MessagingAccessPointInterceptor> &interceptor);
 
-            static boost::shared_ptr<MessagingAccessPoint> getMessagingAccessPoint(std::string &url,
-                                                                                   boost::shared_ptr<KeyValue> properties = kv_nullptr);
-
-        };
+        static void
+        removeInterceptor(const boost::shared_ptr<interceptor::MessagingAccessPointInterceptor> &interceptor);
+    };
 
 END_NAMESPACE_2(io, openmessaging)
 
-#endif // MESSAGINGACCESSPOINTFACTORY_H
+#endif // OMS_MESSAGING_ACCESS_POINT_FACTORY_H

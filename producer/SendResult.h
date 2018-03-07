@@ -1,5 +1,5 @@
-#ifndef SENDRESULT_H
-#define SENDRESULT_H
+#ifndef OMS_SEND_RESULT_H
+#define OMS_SEND_RESULT_H
 
 #include <string>
 
@@ -7,28 +7,29 @@
 
 #include "KeyValue.h"
 #include "Namespace.h"
+#include "Uncopyable.h"
 
 BEGIN_NAMESPACE_3(io, openmessaging, producer)
 
-            class SendResult {
-            public:
-                SendResult(const std::string &msgId, boost::shared_ptr<KeyValue> props) : _messageId(msgId),
-                                                                                          _properties(props) {
-                }
+    /**
+     * The result of sending a OMS message to server
+     * with the message id and some properties.
+     *
+     * @version OMS 1.0
+     * @since OMS 1.0
+     */
+    class SendResult : private Uncopyable {
+    public:
+        virtual ~SendResult() {
 
-                const std::string &messageId() const {
-                    return _messageId;
-                }
+        }
 
-                boost::shared_ptr<KeyValue> properties() const {
-                    return _properties;
-                }
+        virtual std::string messageId() = 0;
 
-            protected:
-                std::string _messageId;
-                boost::shared_ptr<KeyValue> _properties;
-            };
+        virtual boost::shared_ptr<KeyValue> properties() = 0;
+
+    };
 
 END_NAMESPACE_3(io, openmessaging, producer)
 
-#endif // SENDRESULT_H
+#endif // OMS_SEND_RESULT_H
