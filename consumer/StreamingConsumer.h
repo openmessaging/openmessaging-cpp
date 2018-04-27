@@ -1,37 +1,39 @@
-#ifndef OMS_STREAMCONSUMER_H
-#define OMS_STREAMCONSUMER_H
+#ifndef OMS_STREAM_CONSUMER_H
+#define OMS_STREAM_CONSUMER_H
 
 #include <string>
 #include <vector>
 
+#include "smart_pointer.h"
 #include "KeyValue.h"
 #include "ServiceLifecycle.h"
-#include "MessageIterator.h"
+#include "StreamingIterator.h"
 #include "Namespace.h"
 
 BEGIN_NAMESPACE_3(io, openmessaging, consumer)
+    /**
+     * A {@code Queue} is divided by many streams.
+     * <p>
+     * A {@code StreamingConsumer} object supports consume messages from a
+     * specified partition like a iterator.
+     *
+     * @version OMS 1.0
+     * @see Stream
+     * @since OMS 1.0
+     */
+    class StreamingConsumer : public virtual ServiceLifecycle {
+    public:
+        virtual ~StreamingConsumer() {
 
-            class StreamingConsumer : public virtual ServiceLifecycle {
-            public:
-                virtual ~StreamingConsumer() {
+        }
 
-                }
+        virtual KeyValuePtr attributes() = 0;
 
-                virtual boost::shared_ptr<KeyValue> properties() = 0;
+        virtual StreamingIteratorPtr seek(const std::string &name, long offset, int whence) = 0;
 
-                virtual std::vector<std::string> streams() = 0;
-
-                virtual std::vector<std::string> consumers() = 0;
-
-                virtual MessageIterator current() = 0;
-
-                virtual MessageIterator begin() = 0;
-
-                virtual MessageIterator end() = 0;
-
-                virtual MessageIterator seekByTime(long timestamp) = 0;
-            };
+    };
+    typedef NS::shared_ptr<StreamingConsumer> StreamingConsumerPtr;
 
 END_NAMESPACE_3(io, openmessaging, consumer)
 
-#endif //OMS_STREAMCONSUMER_H
+#endif //OMS_STREAM_CONSUMER_H

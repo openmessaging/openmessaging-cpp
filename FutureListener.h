@@ -1,20 +1,25 @@
-#ifndef OMS_FUTURELISTENER_H
-#define OMS_FUTURELISTENER_H
+#ifndef OMS_FUTURE_LISTENER_H
+#define OMS_FUTURE_LISTENER_H
 
-#include "Future.h"
+
 #include "Namespace.h"
+#include "Uncopyable.h"
 
 BEGIN_NAMESPACE_2(io, openmessaging)
 
-        class FutureListener {
-        public:
-            virtual FutureListener() {
+    class Future;
 
-            }
+    class FutureListener : private Uncopyable {
+    public:
+        virtual ~FutureListener() {
 
-            virtual operationComplete(const Future &future) = 0;
-        };
+        }
+
+        virtual void operationComplete(const Future& future) = 0;
+    };
+
+    typedef NS::shared_ptr<FutureListener> FutureListenerPtr;
 
 END_NAMESPACE_2(io, openmessaging)
 
-#endif //OMS_FUTURELISTENER_H
+#endif //OMS_FUTURE_LISTENER_H
