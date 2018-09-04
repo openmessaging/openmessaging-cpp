@@ -1,16 +1,33 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #ifndef OMS_PRODUCER_H
 #define OMS_PRODUCER_H
 
+#include <list>
 #include "smart_pointer.h"
 #include "MessageFactory.h"
 #include "ServiceLifecycle.h"
 #include "Message.h"
 #include "SendResult.h"
+#include "TransactionalSendResult.h"
 #include "Namespace.h"
 #include "OMS.h"
-#include "LocalTransactionExecutor.h"
+#include "TransactionStateCheckListener.h"
 #include "Future.h"
-#include "BatchMessageSender.h"
 #include "interceptor/ProducerInterceptor.h"
 
 BEGIN_NAMESPACE_3(io, openmessaging, producer)
@@ -44,50 +61,14 @@ BEGIN_NAMESPACE_3(io, openmessaging, producer)
         }
 
         /**
-         * Returns the attributes of this {@code Producer} instance.
-         * Changes to the return {@code KeyValue} are not reflected in physical {@code Producer}.
-         * <p>
-         * There are some standard attributes defined by OMS for {@code Producer}:
-         * <ul>
-         * <li> {@link OMSBuiltinKeys#PRODUCER_ID}, the unique producer id for a producer instance.
-         * <li> {@link OMSBuiltinKeys#OPERATION_TIMEOUT}, the default timeout period for operations of {@code Producer}.
-         * </ul>
-         *
-         * @return the attributes
-         */
-        virtual KeyValuePtr attributes() = 0;
-
-        /**
          * Sends a message to the specified destination synchronously, the destination should be preset to
-         * {@link Message#sysHeaders()}, other header fields as well.
+         * {@link Message#Headers()}, other header fields as well.
          *
          * @param message a message will be sent
          * @return the successful {@code SendResult}
-         * @throws OMSMessageFormatException if an invalid message is specified.
-         * @throws OMSTimeOutException if the given timeout elapses before the send operation completes
-         * @throws OMSRuntimeException if the {@code Producer} fails to send the message due to some internal error.
          */
-        virtual SendResultPtr send(const MessagePtr &message,
-                                   const KeyValuePtr &properties = kv_nullptr) = 0;
+        virtual SendResultPtr send(const MessagePtr &message) = 0;
 
-        /**
-         * Sends a transactional message to the specified destination synchronously, using the specified attributes,
-         * the destination should be preset to {@link Message#sysHeaders()}, other header fields as well.
-         * <p>
-         * A transactional message will be exposed to consumer if and only if the local transaction
-         * branch has been committed, or be discarded if local transaction has been rolled back.
-         *
-         * @param message a transactional message will be sent
-         * @param branchExecutor local transaction executor associated with the message
-         * @param attributes the specified attributes
-         * @return the successful {@code SendResult}
-         * @throws OMSMessageFormatException if an invalid message is specified.
-         * @throws OMSTimeOutException if the given timeout elapses before the send operation completes
-         * @throws OMSRuntimeException if the {@code Producer} fails to send the message due to some internal error.
-         */
-        virtual SendResultPtr send(const MessagePtr &message,
-                                   const LocalTransactionExecutorPtr &executor,
-                                   const KeyValuePtr &properties) = 0;
 
         /**
          * Asynchronously send a message to its destination, which is specified in system headers.
@@ -100,7 +81,7 @@ BEGIN_NAMESPACE_3(io, openmessaging, producer)
          * @param properties Optional additional properties.
          * @return Smart pointer to Future instance.
          */
-        virtual FuturePtr sendAsync(const MessagePtr &message, const KeyValuePtr &properties = kv_nullptr) = 0;
+        virtual FuturePtr sendAsync(const MessagePtr &message) = 0;
 
         /**
          * Sends a message to the specified destination in one way, using the specified attributes, the destination
@@ -112,14 +93,14 @@ BEGIN_NAMESPACE_3(io, openmessaging, producer)
          * @param message a message will be sent
          * @param properties the specified userHeaders
          */
-        virtual void sendOneway(const MessagePtr &message, const KeyValuePtr &properties = kv_nullptr) = 0;
+        virtual void sendOneway(const MessagePtr &message) = 0;
 
         /**
          * Creates a {@code BatchMessageSender} to send message in batch way.
          *
          * @return a {@code BatchMessageSender} instance
          */
-        virtual BatchMessageSenderPtr createSequenceBatchMessageSender() = 0;
+        virtual SendResultPtr send(const list<MessagePtr> &message) = 0;
 
         /**
          * Adds a {@code ProducerInterceptor} to intercept send operations of producer.
@@ -134,6 +115,8 @@ BEGIN_NAMESPACE_3(io, openmessaging, producer)
          * @param interceptor a producer interceptor will be removed
          */
         virtual void removeInterceptor(const interceptor::ProducerInterceptorPtr &interceptor) = 0;
+
+        TransactionalResultPtr prepare(const MessagePtr &message) = 0;
     };
 
     typedef NS::shared_ptr<Producer> ProducerPtr;

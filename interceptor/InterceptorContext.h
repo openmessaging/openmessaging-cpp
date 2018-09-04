@@ -14,35 +14,29 @@
  * limitations under the License.
  */
 
-#ifndef OMS_SEND_RESULT_H
-#define OMS_SEND_RESULT_H
+#ifndef OMS_INTERCEPTOR_CONTEXT_H
+#define OMS_INTERCEPTOR_CONTEXT_H
 
-#include <string>
-
-#include "smart_pointer.h"
 #include "Namespace.h"
+#include "OMS.h"
 #include "Uncopyable.h"
 
-BEGIN_NAMESPACE_3(io, openmessaging, producer)
+BEGIN_NAMESPACE_3(io, openmessaging, interceptor)
 
-    /**
-     * The result of sending a OMS message to server
-     * with the message id and some properties.
-     *
-     * @version OMS 1.0
-     * @since OMS 1.0
-     */
-    class SendResult : private Uncopyable {
-    public:
-        virtual ~SendResult() {
+        class InterceptorContext : private Uncopyable {
+        public:
+            virtual ~InterceptorContext() {
+            }
+            /**
+             * Returns the attributes of this {@code InterceptorContext} instance.
+             *
+             * @return the attributes.
+             */
+            virtual KeyValuePtr attributes() = 0;
 
-        }
+        };
 
-        virtual std::string messageId() = 0;
-    };
+    typedef NS::shared_ptr<InterceptorContext> InterceptorContextPtr;
 
-    typedef NS::shared_ptr<SendResult> SendResultPtr;
-
-END_NAMESPACE_3(io, openmessaging, producer)
-
-#endif // OMS_SEND_RESULT_H
+END_NAMESPACE_3(io, openmessaging, interceptor)
+#endif //OMS_INTERCEPTOR_CONTEXT_H

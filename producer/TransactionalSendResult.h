@@ -14,8 +14,8 @@
  * limitations under the License.
  */
 
-#ifndef OMS_SEND_RESULT_H
-#define OMS_SEND_RESULT_H
+#ifndef OMS_TRANSACTIONAL_SEND_RESULT_H
+#define OMS_TRANSACTIONAL_SEND_RESULT_H
 
 #include <string>
 
@@ -32,17 +32,32 @@ BEGIN_NAMESPACE_3(io, openmessaging, producer)
      * @version OMS 1.0
      * @since OMS 1.0
      */
-    class SendResult : private Uncopyable {
+    class TransactionalSendResult : public SendResult {
     public:
-        virtual ~SendResult() {
+        virtual ~TransactionalSendResult() {
 
         }
 
-        virtual std::string messageId() = 0;
+        /**
+         * The unique transactionId id related to the {@code TransactionResult} instance.
+         *
+         * @return the transactional id
+         */
+        virtual std::string transactionId() = 0;
+
+        /**
+         * Commits a transaction.
+         */
+        virtual void commit() = 0;
+
+        /**
+         * Rolls back a transaction.
+         */
+        virtual void rollback() = 0;
     };
 
-    typedef NS::shared_ptr<SendResult> SendResultPtr;
+    typedef NS::shared_ptr<SendResult> TransactionalSendResultPtr;
 
 END_NAMESPACE_3(io, openmessaging, producer)
 
-#endif // OMS_SEND_RESULT_H
+#endif // OMS_TRANSACTIONAL_SEND_RESULT_H

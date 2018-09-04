@@ -1,3 +1,19 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 #ifndef OMS_MESSAGE_H
 #define OMS_MESSAGE_H
 
@@ -5,7 +21,7 @@
 
 #include "smart_pointer.h"
 #include "KeyValue.h"
-#include "BuiltinKeys.h"
+#include "OMSBuiltinKeys.h"
 #include "Namespace.h"
 #include "Uncopyable.h"
 
@@ -40,26 +56,8 @@ BEGIN_NAMESPACE_2(io, openmessaging)
 
         }
 
-        virtual KeyValuePtr sysHeaders() = 0;
-
-        virtual KeyValuePtr userHeaders() = 0;
-
-        virtual Message& putSysHeaders(const std::string &key, int value) = 0;
-
-        virtual Message& putSysHeaders(const std::string &key, long value) = 0;
-
-        virtual Message& putSysHeaders(const std::string &key, double value) = 0;
-
-        virtual Message& putSysHeaders(const std::string &key, const std::string &value) = 0;
-
-        virtual Message& putUserHeaders(const std::string &key, int value) = 0;
-
-        virtual Message& putUserHeaders(const std::string &key, long value) = 0;
-
-        virtual Message& putUserHeaders(const std::string &key, double value) = 0;
-
-        virtual Message& putUserHeaders(const std::string &key, const std::string &value) = 0;
-
+        virtual KeyValuePtr properties() = 0;
+        virtual HeadersPtr headers() = 0;
     };
 
     typedef NS::shared_ptr<Message> MessagePtr;

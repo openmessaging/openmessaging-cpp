@@ -14,35 +14,19 @@
  * limitations under the License.
  */
 
-#ifndef OMS_SEND_RESULT_H
-#define OMS_SEND_RESULT_H
+#ifndef OMS_BUILTIN_KEYS_H
+#define OMS_BUILTIN_KEYS_H
 
 #include <string>
-
-#include "smart_pointer.h"
 #include "Namespace.h"
-#include "Uncopyable.h"
 
-BEGIN_NAMESPACE_3(io, openmessaging, producer)
+BEGIN_NAMESPACE_2(io, openmessaging)
 
-    /**
-     * The result of sending a OMS message to server
-     * with the message id and some properties.
-     *
-     * @version OMS 1.0
-     * @since OMS 1.0
-     */
-    class SendResult : private Uncopyable {
-    public:
-        virtual ~SendResult() {
+        static const std::string DRIVER_IMPL = "DRIVER_IMPL";
+        static const std::string ACCESS_POINTS = "ACCESS_POINTS";
+        static const std::string ACCOUNT_ID = "ACCOUNT_ID";
+        static const std::string REGION = "REGION";
+        static const std::string OPERATION_TIMEOUT = "OPERATION_TIMEOUT";
 
-        }
-
-        virtual std::string messageId() = 0;
-    };
-
-    typedef NS::shared_ptr<SendResult> SendResultPtr;
-
-END_NAMESPACE_3(io, openmessaging, producer)
-
-#endif // OMS_SEND_RESULT_H
+END_NAMESPACE_2(io, openmessaging)
+#endif // OMS_BUILTIN_KEYS_H
